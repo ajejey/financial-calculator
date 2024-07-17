@@ -7,6 +7,7 @@ import { Label } from './ui/label';
 import { Input } from './ui/input';
 import { Slider } from './ui/slider';
 import { Progress } from './ui/progress';
+import { numberToWords } from '@/utils/numberToWords';
 
 const FinancialPlanner = () => {
   // General finances
@@ -171,6 +172,8 @@ const calculateProjection = () => {
                   value={monthlyIncome}
                   onChange={(e) => setMonthlyIncome(Number(e.target.value))}
                 />
+                
+                <span className="text-sm text-red-500">₹ {numberToWords(monthlyIncome)}</span>
               </div>
               <div>
                 <Label htmlFor="monthlyExpenses">Monthly Expenses (₹)</Label>
@@ -180,6 +183,8 @@ const calculateProjection = () => {
                   value={monthlyExpenses}
                   onChange={(e) => setMonthlyExpenses(Number(e.target.value))}
                 />
+                
+                <span className="text-sm text-red-500">₹ {numberToWords(monthlyExpenses)}</span>
               </div>
             </div>
           </TabsContent>
@@ -193,6 +198,8 @@ const calculateProjection = () => {
                   value={monthlySIP}
                   onChange={(e) => setMonthlySIP(Number(e.target.value))}
                 />
+                
+                <span className="text-sm text-red-500">₹ {numberToWords(monthlySIP)}</span>
               </div>
               <div>
                 <Label htmlFor="sipReturnRate">Expected Annual Return Rate (%)</Label>
@@ -202,6 +209,8 @@ const calculateProjection = () => {
                   value={sipReturnRate}
                   onChange={(e) => setSipReturnRate(Number(e.target.value))}
                 />
+                
+                <span className="text-sm text-red-500">{sipReturnRate}%</span>
               </div>
             </div>
           </TabsContent>
@@ -215,6 +224,8 @@ const calculateProjection = () => {
                   value={houseValue}
                   onChange={(e) => setHouseValue(Number(e.target.value))}
                 />
+                
+                <span className="text-sm text-red-500">₹ {numberToWords(houseValue)}</span>
               </div>
               <div>
                 <Label htmlFor="downPaymentPercent">Down Payment (%)</Label>
@@ -236,6 +247,8 @@ const calculateProjection = () => {
                   value={loanInterestRate}
                   onChange={(e) => setLoanInterestRate(Number(e.target.value))}
                 />
+                
+                <span className="text-sm text-red-500">{loanInterestRate}%</span>
               </div>
               <div>
                 <Label htmlFor="loanTenureYears">Loan Tenure (Years)</Label>
@@ -245,6 +258,8 @@ const calculateProjection = () => {
                   value={loanTenureYears}
                   onChange={(e) => setLoanTenureYears(Number(e.target.value))}
                 />
+                
+                <span className="text-sm text-red-500">{loanTenureYears} years</span>
               </div>
               <div>
                 <Label htmlFor="yearsToBuyHouse">Years until House Purchase</Label>
@@ -254,6 +269,8 @@ const calculateProjection = () => {
                   value={yearsToBuyHouse}
                   onChange={(e) => setYearsToBuyHouse(Number(e.target.value))}
                 />
+                
+                <span className="text-sm text-red-500">{yearsToBuyHouse} years</span>
               </div>
             </div>
           </TabsContent>
@@ -267,6 +284,7 @@ const calculateProjection = () => {
                   value={currentAge}
                   onChange={(e) => setCurrentAge(Number(e.target.value))}
                 />
+
               </div>
               <div>
                 <Label htmlFor="retirementAge">Retirement Age</Label>
@@ -285,6 +303,8 @@ const calculateProjection = () => {
                   value={monthlySwpAfterRetirement}
                   onChange={(e) => setMonthlySwpAfterRetirement(Number(e.target.value))}
                 />
+                
+                <span className="text-sm text-red-500">₹ {numberToWords(monthlySwpAfterRetirement)}</span>
               </div>
               <div>
                 <Label htmlFor="desiredRetirementCorpus">Desired Retirement Corpus (₹)</Label>
@@ -294,6 +314,8 @@ const calculateProjection = () => {
                   value={desiredRetirementCorpus}
                   onChange={(e) => setDesiredRetirementCorpus(Number(e.target.value))}
                 />
+                
+                <span className="text-sm text-red-500">₹ {numberToWords(desiredRetirementCorpus)}</span>
               </div>
               <div>
                 <Label htmlFor="inflationRate">Expected Inflation Rate (%)</Label>
@@ -303,6 +325,8 @@ const calculateProjection = () => {
                   value={inflationRate}
                   onChange={(e) => setInflationRate(Number(e.target.value))}
                 />
+                
+                <span className="text-sm text-red-500">{inflationRate}%</span>
               </div>
             </div>
             <div className="mt-6">
@@ -337,6 +361,8 @@ const calculateProjection = () => {
                   value={swpStartAge}
                   onChange={(e) => setSwpStartAge(Number(e.target.value))}
                 />
+                
+                <span className="text-sm text-red-500">{swpStartAge} years</span>
               </div>
               <div>
                 <Label htmlFor="swpAmount">Initial Monthly SWP Amount (₹)</Label>
@@ -346,6 +372,8 @@ const calculateProjection = () => {
                   value={swpAmount}
                   onChange={(e) => setSwpAmount(Number(e.target.value))}
                 />
+                
+                <span className="text-sm text-red-500">₹ {numberToWords(swpAmount)}</span>
               </div>
               <div>
                 <Label htmlFor="swpGrowthRate">SWP Annual Growth Rate (%)</Label>
@@ -355,6 +383,8 @@ const calculateProjection = () => {
                   value={swpGrowthRate}
                   onChange={(e) => setSwpGrowthRate(Number(e.target.value))}
                 />
+                
+                <span className="text-sm text-red-500">{swpGrowthRate}%</span>
               </div>
             </div>
           </TabsContent>
