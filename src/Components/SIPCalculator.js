@@ -152,9 +152,9 @@ const SIPCalculator = () => {
                         />
                     </div>
                 </div>
-                <div className="mt-6 h-[700px]">
+                <div className="mt-6 h-[600px]">
                     <LineChart
-                        height={700}
+                        height={600}
                         xAxis={[{ data: xAxis, label: "Years", min:0 }]}
                         series={[
                             { data: totalAmountData, label: "Total Amount", curve: 'monotoneX' },
