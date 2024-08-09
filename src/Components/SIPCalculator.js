@@ -257,9 +257,9 @@ const SIPCalculator = () => {
                     </div>
                 </div>
 
-                <div>
+                <div style={{ display: "flex", justifyContent: "flex-end" }}>
                     <Button variant="contained" color="primary" onClick={handleRandomize}>
-                        Randomize
+                        Randomize Filters
                     </Button>
                 </div>
 

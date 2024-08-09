@@ -33,11 +33,11 @@ export default function RootLayout({ children }) {
             <PieChart className="h-8 w-8 text-blue-600 mr-2" />
             <span className="font-bold text-xl text-gray-800">FinPlanner</span>
           </div>
-          <div className="flex space-x-4">
+          {/* <div className="flex space-x-4">
             <Link href="/about" className="text-gray-600 hover:text-gray-900">About</Link>
             <Link href="/blog" className="text-gray-600 hover:text-gray-900">Blog</Link>
             <Link href="/contact" className="text-gray-600 hover:text-gray-900">Contact</Link>
-          </div>
+          </div> */}
         </nav>
       </header>
         {/* <div className="flex justify-center gap-4 p-4">
