@@ -130,8 +130,3 @@ export default function Home() {
     </div>
   )
 }
-
-// {/* <main className="flex  flex-col items-center justify-between">
-//       <h2>SIP Calculator</h2>
-//       <Calculator />
-//     </main> */}
