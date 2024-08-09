@@ -75,7 +75,7 @@ export default function Home() {
               { name: "Amit K.", quote: "I love how I can adjust different parameters and instantly see the impact on my long-term financial health." }
             ].map((testimonial, index) => (
               <div key={index} className="bg-white rounded-lg shadow-lg p-6">
-                <p className="text-gray-600 italic mb-4">&quot;{testimonial.quote}&quot;</p>
+                <p className="text-gray-600 italic mb-4">{testimonial.quote}</p>
                 <p className="text-gray-800 font-semibold">- {testimonial.name}</p>
               </div>
             ))}
