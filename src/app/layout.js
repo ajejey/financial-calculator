@@ -22,7 +22,12 @@ export const metadata = {
     description: 'Plan your financial future with our intuitive tool.',
     images: ['../../public/vercel.svg'],
   },
+  verification: {
+    google: '7nItEeuNSAIFL_unU4Ai5p-SGizDDaJU8XRYEKdtOgk'
+  }
 }
+
+{/* <meta name="google-site-verification" content="7nItEeuNSAIFL_unU4Ai5p-SGizDDaJU8XRYEKdtOgk" /> */}
 
 export default function RootLayout({ children }) {
   return (
