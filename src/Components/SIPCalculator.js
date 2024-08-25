@@ -21,7 +21,8 @@ const SIPCalculator = () => {
     const [withdrawalAmount, setWithdrawalAmount] = useState(initialValueCombinations[1].withdrawalAmount);
     const [withdrawalDuration, setWithdrawalDuration] = useState(initialValueCombinations[1].withdrawalDuration);
     const [swpStartYear, setSwpStartYear] = useState(initialValueCombinations[1].swpStartYear);
-    
+    const [sipIncrementPercentage, setSipIncrementPercentage] = useState(5);
+
 
 
     const [chartData, setChartData] = useState([]);
@@ -40,10 +41,16 @@ const SIPCalculator = () => {
         let totalAmount = initialLumpsum;
         let investedAmount = initialLumpsum;
         let totalWithdrawalAmount = 0;
+        let currentMonthlyInvestment = monthlyInvestment;
 
         for (let i = 1; i <= totalMonths; i++) {
             const currentYear = Math.floor((i - 1) / 12);
-            const currentMonthlyInvestment = data[currentYear]?.monthlyInvestment ?? monthlyInvestment;
+            // const currentMonthlyInvestment = data[currentYear]?.monthlyInvestment ?? monthlyInvestment;
+            
+            if (i % 12 === 1 && currentYear > 0) {
+                // Increase SIP at the start of each year (except the first year)
+                currentMonthlyInvestment *= (1 + sipIncrementPercentage / 100);
+            }
             const currentMonthlyWithdrawal = data[currentYear]?.monthlyWithdrawal ?? withdrawalAmount;
 
             if (i <= investmentDuration * 12) {
@@ -76,7 +83,7 @@ const SIPCalculator = () => {
 
     useEffect(() => {
         calculateInvestmentAndWithdrawal();
-    }, [initialLumpsum, monthlyInvestment, expectedReturnRate, investmentDuration, withdrawalAmount, withdrawalDuration, swpStartYear]);
+    }, [initialLumpsum, monthlyInvestment, expectedReturnRate, investmentDuration, withdrawalAmount, withdrawalDuration, swpStartYear, sipIncrementPercentage]);
 
 
     const recalculateTotalAmount = (data) => {
@@ -195,6 +202,19 @@ const SIPCalculator = () => {
                         />
                         <br />
                         <span className="text-sm text-red-500">₹ {numberToWords(monthlyInvestment)}</span>
+                    </div>
+                    <div>
+                        <label className='block text-sm font-medium text-gray-700' htmlFor="sipIncrementPercentage">
+                            SIP Increment (%)
+                        </label>
+                        <Input
+                            id="sipIncrementPercentage"
+                            type="number"
+                            value={sipIncrementPercentage}
+                            onChange={(e) => setSipIncrementPercentage(Number(e.target.value))}
+                        />
+                        <br />
+                        <span className="text-sm text-red-500">{sipIncrementPercentage}%</span>
                     </div>
                     <div>
                         <label className='block text-sm font-medium text-gray-700' htmlFor="expectedReturnRate">
