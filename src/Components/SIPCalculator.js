@@ -1,7 +1,7 @@
 "use client"
 import { numberToWords } from '@/utils/numberToWords';
 import { Button, Card, CardContent, CardHeader, Input, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from '@mui/material';
-import { LineChart } from '@mui/x-charts';
+import { axisClasses, LineChart } from '@mui/x-charts';
 import { ChevronsDown, ChevronsUp, CircleCheckBig } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 
@@ -46,7 +46,7 @@ const SIPCalculator = () => {
         for (let i = 1; i <= totalMonths; i++) {
             const currentYear = Math.floor((i - 1) / 12);
             // const currentMonthlyInvestment = data[currentYear]?.monthlyInvestment ?? monthlyInvestment;
-            
+
             if (i % 12 === 1 && currentYear > 0) {
                 // Increase SIP at the start of each year (except the first year)
                 currentMonthlyInvestment *= (1 + sipIncrementPercentage / 100);
@@ -130,47 +130,7 @@ const SIPCalculator = () => {
         <Card className="w-full ">
             <CardHeader title="SIP and SWP Calculator" className='pb-0' />
             <CardContent>
-                {/* Card section */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
-                    <div className="bg-blue-500 text-white shadow-md rounded-lg p-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <h3 className="text-lg font-semibold">Total Invested</h3>
-                                <p className="text-3xl font-bold">₹{chartData[chartData.length - 1]?.investedAmount.toLocaleString('en-IN')}</p>
-                            </div>
-                            <div>
-                            <ChevronsUp size={48} />
-                            </div>
-                        </div>
-                        <p className="mt-2 text-sm">({numberToWords(chartData[chartData.length - 1]?.investedAmount)})</p>
-                    </div>
 
-                    <div className="bg-green-500 text-white shadow-md rounded-lg p-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <h3 className="text-lg font-semibold">Total Withdrawn</h3>
-                                <p className="text-3xl font-bold">₹{chartData[chartData.length - 1]?.withdrawalAmount.toLocaleString('en-IN')}</p>
-                            </div>
-                            <div>
-                            <ChevronsDown size={48} />
-                            </div>
-                        </div>
-                        <p className="mt-2 text-sm">{numberToWords(chartData[chartData.length - 1]?.withdrawalAmount)}</p>
-                    </div>
-
-                    <div className="bg-red-500 text-white shadow-md rounded-lg p-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <h3 className="text-lg font-semibold">Final Amount</h3>
-                                <p className="text-3xl font-bold">₹{chartData[chartData.length - 1]?.totalAmount.toLocaleString('en-IN')}</p>
-                            </div>
-                            <div>
-                            <CircleCheckBig size={48} />
-                            </div>
-                        </div>
-                        <p className="mt-2 text-sm">({numberToWords(chartData[chartData.length - 1]?.totalAmount)})</p>
-                    </div>
-                </div>
 
                 {/* Filter section */}
                 <div className="mb-4 text-lg font-semibold">Filters</div>
@@ -288,15 +248,70 @@ const SIPCalculator = () => {
                     <LineChart
                         height={500}
                         xAxis={[{ data: chartData.map(item => item.year), label: "Years", min: 0 }]}
+                        yAxis={[{ data: chartData.map(item => item.totalAmount), label: "Amount", min: 0, valueFormatter: (value) => `${(value / 100000).toLocaleString('hi-IN')}L` }]}
+                        margin={{ top: 10, right: 30, left: 70 }}
                         series={[
-                            { data: chartData.map(item => item.totalAmount), label: "Total Amount", curve: 'monotoneX' },
-                            { data: chartData.map(item => item.investedAmount), label: "Invested Amount", curve: 'stepAfter' },
-                            { data: chartData.map(item => item.withdrawalAmount), label: "Withdrawal Amount", curve: 'stepAfter' }
+                            { data: chartData.map(item => item.totalAmount), label: "Total Amount", curve: 'monotoneX', valueFormatter: (value) => `${(value / 100000).toLocaleString('hi-IN')}L` },
+                            { data: chartData.map(item => item.investedAmount), label: "Invested Amount", curve: 'stepAfter', valueFormatter: (value) => `${(value / 100000).toLocaleString('hi-IN')}L` },
+                            { data: chartData.map(item => item.withdrawalAmount), label: "Withdrawal Amount", curve: 'stepAfter', valueFormatter: (value) => `${(value / 100000).toLocaleString('hi-IN')}L` },
                         ]}
+                        sx={{
+                            [`.${axisClasses.left} .${axisClasses.label}`]: {
+                                // Move the y-axis label with CSS
+                                transform: 'translateX(-25px)',
+                            },
+                        }
+                        }
                     />
                 </div>
-                
 
+                {/* Card section */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+                    <div className="bg-blue-500 text-white shadow-md rounded-lg p-3">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <h3 className="text-lg font-semibold">Total Invested</h3>
+                                <p className="text-3xl font-bold">₹{chartData[chartData.length - 1]?.investedAmount.toLocaleString('en-IN')}</p>
+                            </div>
+                            <div>
+                                <ChevronsUp size={48} />
+                            </div>
+                        </div>
+                        <p className="mt-2 text-sm">({numberToWords(chartData[chartData.length - 1]?.investedAmount)})</p>
+                    </div>
+
+                    <div className="bg-green-500 text-white shadow-md rounded-lg p-3">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <h3 className="text-lg font-semibold">Total Withdrawn</h3>
+                                <p className="text-3xl font-bold">₹{chartData[chartData.length - 1]?.withdrawalAmount.toLocaleString('en-IN')}</p>
+                            </div>
+                            <div>
+                                <ChevronsDown size={48} />
+                            </div>
+                        </div>
+                        <p className="mt-2 text-sm">{numberToWords(chartData[chartData.length - 1]?.withdrawalAmount)}</p>
+                    </div>
+
+                    <div className="bg-red-500 text-white shadow-md rounded-lg p-3">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <h3 className="text-lg font-semibold">Final Amount</h3>
+                                <p className="text-3xl font-bold">₹{chartData[chartData.length - 1]?.totalAmount.toLocaleString('en-IN')}</p>
+                            </div>
+                            <div>
+                                <CircleCheckBig size={48} />
+                            </div>
+                        </div>
+                        <p className="mt-2 text-sm">({numberToWords(chartData[chartData.length - 1]?.totalAmount)})</p>
+                    </div>
+                </div>
+
+                {/* Table section */}
+                <div className="mt-6 bg-gray-100 p-2">
+                <h3 className="text-lg font-semibold ">Investment History</h3>
+
+                </div>
 
                 <TableContainer component={Paper} className="mt-6 overflow-x-auto h-[300px]">
                     <Table stickyHeader size='small'>
