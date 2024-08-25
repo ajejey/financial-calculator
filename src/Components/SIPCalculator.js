@@ -21,6 +21,7 @@ const SIPCalculator = () => {
     const [withdrawalAmount, setWithdrawalAmount] = useState(initialValueCombinations[1].withdrawalAmount);
     const [withdrawalDuration, setWithdrawalDuration] = useState(initialValueCombinations[1].withdrawalDuration);
     const [swpStartYear, setSwpStartYear] = useState(initialValueCombinations[1].swpStartYear);
+    
 
 
     const [chartData, setChartData] = useState([]);
