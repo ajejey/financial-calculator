@@ -52,11 +52,11 @@ const page = () => (
 
     
     <p className="text-lg leading-relaxed text-gray-700 mb-8">
-    Investing without a goal is like driving without a destination—you may end up somewhere, but it’s unlikely to be where you wanted to go. Defining your financial goals is the most crucial step to ensure that your investments are aligned with what you truly want to achieve in life, whether that’s buying a home, funding your child's education, or enjoying a comfortable retirement.
+    Investing without a goal is like driving without a destination—you may end up somewhere, but it’s unlikely to be where you wanted to go. Defining your financial goals is the most crucial step to ensure that your investments are aligned with what you truly want to achieve in life, whether that’s buying a home, funding your child&apos;s education, or enjoying a comfortable retirement.
     </p>
 
     <p className="text-lg leading-relaxed text-gray-700 mb-8">
-      In this guide, we’ll dive deep into why setting financial goals is essential, how to set realistic goals, and the best ways to invest for them. Plus, we'll show you how our SIP and SWP Calculator can help you plan your investments efficiently.
+      In this guide, we’ll dive deep into why setting financial goals is essential, how to set realistic goals, and the best ways to invest for them. Plus, we&apos;ll show you how our SIP and SWP Calculator can help you plan your investments efficiently.
     </p>
 
     
@@ -84,18 +84,18 @@ const page = () => (
     </p>
 
     <p className="text-lg leading-relaxed text-gray-700 mb-8">
-        Let's consider two scenarios: Rahul, who invests with clear goals, and Priya, who invests without any specific goals.
+        Let&apos;s consider two scenarios: Rahul, who invests with clear goals, and Priya, who invests without any specific goals.
     </p>
     
 
     <p className="text-lg leading-relaxed text-gray-700 mb-8">
-      Rahul: Rahul sets a financial goal of accumulating ₹30 lakhs in 15 years to fund his daughter's higher education. He chooses a mix of equity and balanced mutual funds and starts a Systematic Investment Plan (SIP) of ₹10,000 per month. He reviews his portfolio annually to ensure it’s aligned with his goal and adjusts his investments as needed.
+      Rahul: Rahul sets a financial goal of accumulating ₹30 lakhs in 15 years to fund his daughter&apos;s higher education. He chooses a mix of equity and balanced mutual funds and starts a Systematic Investment Plan (SIP) of ₹10,000 per month. He reviews his portfolio annually to ensure it’s aligned with his goal and adjusts his investments as needed.
     </p>
     <p className="text-lg leading-relaxed text-gray-700 mb-8">
       Priya: Priya also invests ₹10,000 per month in mutual funds, but without any specific goal. She chooses funds based on tips from friends or news articles. When the market dips, she panics and withdraws her investments, fearing losses. Over time, her portfolio grows, but without a clear goal, she is unsure if her investments will cover future needs.
     </p>
     <p className="text-lg leading-relaxed text-gray-700 mb-8">
-      Outcome: After 15 years, Rahul reaches his target amount of ₹30 lakhs, thanks to his disciplined, goal-oriented approach. Priya, on the other hand, ends up with less than expected due to frequent withdrawals and lack of direction. Rahul's example shows that setting goals can lead to more efficient and effective investments.
+      Outcome: After 15 years, Rahul reaches his target amount of ₹30 lakhs, thanks to his disciplined, goal-oriented approach. Priya, on the other hand, ends up with less than expected due to frequent withdrawals and lack of direction. Rahul&apos;s example shows that setting goals can lead to more efficient and effective investments.
     </p>
 
     
@@ -115,7 +115,7 @@ const page = () => (
             <strong>Medium-term Goals:</strong> Purchasing a car, funding a wedding, or planning a down payment for a house.
           </li>
           <li className="mb-4">
-            <strong>Long-term Goals:</strong> Building a retirement corpus, funding children's education, or buying a second home.
+            <strong>Long-term Goals:</strong> Building a retirement corpus, funding children&apos;s education, or buying a second home.
           </li>
           </ul>
       </li>
@@ -203,7 +203,7 @@ const page = () => (
           <li className="mb-4">
             <strong>Choose the Right Mutual Fund:</strong> 
             <br />
-            Select mutual funds based on your goal's time frame:
+            Select mutual funds based on your goal&apos;s time frame:
             <ul className="list-disc list-inside text-lg leading-relaxed text-gray-700 mb-8 pl-4">
               <li className="mb-4">
                 <strong>Short-term Goals:</strong> Invest in debt funds or liquid funds to minimize risk.
