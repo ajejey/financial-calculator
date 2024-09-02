@@ -22,7 +22,7 @@ export const metadata = {
         
       images: [
         {
-          url: 'https://images.unsplash.com/photo-1707999494558-14354a63f6d9?q=80&w=1931&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+          url: 'https://images.unsplash.com/photo-1579621970588-a35d0e7ab9b6?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
           
           width: 1200,
           height: 630,
@@ -43,7 +43,7 @@ const page = () => (
   
   <div className='relative w-full h-64 mb-8'>
     <Image
-      src="https://images.unsplash.com/photo-1544761634-dc512f2238a3?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+      src="https://images.unsplash.com/photo-1579621970588-a35d0e7ab9b6?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
       alt="Mutual Funds"
       fill
       className="w-full h-64 object-cover rounded-lg mb-8"

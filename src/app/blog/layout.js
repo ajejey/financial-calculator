@@ -2,7 +2,7 @@ import React from 'react'
 
 const layout = ({ children }) => {
   return (
-    <div className='container-fluid mx-auto'>
+    <div className='container mx-auto'>
         {children}
     </div>
   )
