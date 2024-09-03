@@ -209,7 +209,14 @@ const SIPCalculator = () => {
                             type="number"
                             inputProps={{ step: "1000" }}
                             value={withdrawalAmount}
-                            onChange={(e) => setWithdrawalAmount(Number(e.target.value))}
+                            onChange={(e) => {
+                                const val = Number(e.target.value);
+                                setWithdrawalAmount(val);
+                                if (val === 0) {
+                                    setSwpStartYear(0);
+                                    setWithdrawalDuration(0);
+                                }
+                            }}
                         />
                         <br />
                         <span className="text-sm text-red-500">₹ {numberToWords(withdrawalAmount)}</span>
@@ -223,6 +230,7 @@ const SIPCalculator = () => {
                             type="number"
                             value={swpStartYear}
                             onChange={(e) => setSwpStartYear(Number(e.target.value))}
+                            disabled={withdrawalAmount === 0}
                         />
                     </div>
                     <div>
@@ -234,6 +242,7 @@ const SIPCalculator = () => {
                             type="number"
                             value={withdrawalDuration}
                             onChange={(e) => setWithdrawalDuration(Number(e.target.value))}
+                            disabled={withdrawalAmount === 0}
                         />
                     </div>
                 </div>
