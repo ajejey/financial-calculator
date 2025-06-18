@@ -1,44 +1,32 @@
 "use client"
 import React, { useState, useEffect } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from 'recharts';
+// import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Label } from './ui/label';
-import { Input } from './ui/input';
-import { Slider } from './ui/slider';
+// import { Input } from './ui/input';
+// import { Slider } from './ui/slider';
 import { Progress } from './ui/progress';
-import { DollarSign, CalendarDays, Landmark, TrendingUp, AlertTriangle, Info } from 'lucide-react'; // Added icons
 import { numberToWords } from '@/utils/numberToWords';
+import RotaryDial from '../Components/ui/RotaryDial'; // Import RotaryDial
+import MobileLineChart from '../Components/MobileLineChart'; // Import MobileLineChart
 
-const StatCard = ({ title, value, icon, description }) => (
-  <Card>
-    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-      <CardTitle className="text-sm font-medium">{title}</CardTitle>
-      {icon}
-    </CardHeader>
-    <CardContent>
-      <div className="text-2xl font-bold">{value}</div>
-      {description && <p className="text-xs text-muted-foreground">{description}</p>}
-    </CardContent>
-  </Card>
-);
-
-const FinancialPlanner = () => {
+const MobileFinancialPlanner = () => {
   // General finances
   const [monthlyIncome, setMonthlyIncome] = useState(50000);
   const [monthlyExpenses, setMonthlyExpenses] = useState(30000);
-  
+
   // SIP (investments)
   const [monthlySIP, setMonthlySIP] = useState(10000);
   const [sipReturnRate, setSipReturnRate] = useState(12);
-  
+
   // House planning
   const [houseValue, setHouseValue] = useState(5000000);
   const [downPaymentPercent, setDownPaymentPercent] = useState(20);
   const [loanInterestRate, setLoanInterestRate] = useState(8);
   const [loanTenureYears, setLoanTenureYears] = useState(20);
   const [yearsToBuyHouse, setYearsToBuyHouse] = useState(5);
-  
+
   // SWP (for retirement)
   const [retirementAge, setRetirementAge] = useState(60);
   const [currentAge, setCurrentAge] = useState(30);
@@ -49,7 +37,7 @@ const FinancialPlanner = () => {
   const [swpStartAge, setSwpStartAge] = useState(60);
   const [swpAmount, setSwpAmount] = useState(50000);
   const [swpGrowthRate, setSwpGrowthRate] = useState(6);
-  
+
   const [data, setData] = useState([]);
   const [retirementStats, setRetirementStats] = useState({
     projectedCorpus: 0,
@@ -66,17 +54,17 @@ const calculateProjection = () => {
     let investments = 0;
     let loanAmount = 0;
     let age = currentAge;
-    
+
     const downPayment = houseValue * (downPaymentPercent / 100);
     const loanTenureMonths = loanTenureYears * 12;
-    const monthlyLoanPayment = (houseValue - downPayment) * (loanInterestRate / 1200) * 
-      Math.pow(1 + loanInterestRate / 1200, loanTenureMonths) / 
+    const monthlyLoanPayment = (houseValue - downPayment) * (loanInterestRate / 1200) *
+      Math.pow(1 + loanInterestRate / 1200, loanTenureMonths) /
       (Math.pow(1 + loanInterestRate / 1200, loanTenureMonths) - 1);
 
     for (let year = 0; year <= Math.max(retirementAge, swpStartAge) - currentAge + 30; year++) {
       let yearlySavings = (monthlyIncome - monthlyExpenses - monthlySIP) * 12;
       let yearlyInvestments = monthlySIP * 12;
-      
+
       if (year === yearsToBuyHouse) {
         if (savings >= downPayment) {
           savings -= downPayment;
@@ -86,14 +74,14 @@ const calculateProjection = () => {
           continue;
         }
       }
-      
+
       if (loanAmount > 0) {
         const yearlyLoanPayment = monthlyLoanPayment * 12;
         yearlySavings -= yearlyLoanPayment;
         loanAmount -= (yearlyLoanPayment - (loanAmount * loanInterestRate / 100));
         if (loanAmount < 0) loanAmount = 0;
       }
-      
+
       savings += yearlySavings;
       investments *= (1 + sipReturnRate / 100);
       investments += yearlyInvestments;
@@ -119,7 +107,7 @@ const calculateProjection = () => {
         loanRemaining: Math.round(loanAmount),
         swpAmount: age >= swpStartAge ? Math.round(swpAmount * Math.pow(1 + swpGrowthRate / 100, age - swpStartAge)) : 0
       });
-      
+
       age++;
     }
 
@@ -129,7 +117,7 @@ const calculateProjection = () => {
 
   const calculateRetirementStats = (projection) => {
     const projectedCorpus = projection.find(p => p.age === retirementAge)?.investments || 0;
-    const inflationAdjustedMonthlyExpense = monthlySwpAfterRetirement * 
+    const inflationAdjustedMonthlyExpense = monthlySwpAfterRetirement *
       Math.pow(1 + inflationRate / 100, retirementAge - currentAge);
 
     let yearsOfSustainability = 0;
@@ -154,8 +142,8 @@ const calculateProjection = () => {
 
   useEffect(() => {
     calculateProjection();
-  }, [monthlyIncome, monthlyExpenses, monthlySIP, sipReturnRate, houseValue, downPaymentPercent, 
-      loanInterestRate, loanTenureYears, yearsToBuyHouse, retirementAge, currentAge, 
+  }, [monthlyIncome, monthlyExpenses, monthlySIP, sipReturnRate, houseValue, downPaymentPercent,
+      loanInterestRate, loanTenureYears, yearsToBuyHouse, retirementAge, currentAge,
       monthlySwpAfterRetirement, desiredRetirementCorpus, inflationRate, swpStartAge, swpAmount, swpGrowthRate]);
 
   const formatRupees = (value) => {
@@ -163,178 +151,288 @@ const calculateProjection = () => {
   };
 
   return (
-    <Card className="w-full mx-auto shadow-lg">
-      <CardHeader className="bg-muted/50">
-        <CardTitle className="text-2xl">Comprehensive Indian Financial Planner</CardTitle>
+    <Card className="w-full sm:max-w-md mx-auto">
+      <CardHeader>
+        <CardTitle>Comprehensive Indian Financial Planner</CardTitle>
       </CardHeader>
-      <CardContent className="p-6">
-        <Tabs defaultValue="general" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 sm:grid-cols-5 gap-2">
-            <TabsTrigger value="general">General</TabsTrigger>
+      <CardContent>
+        <Tabs defaultValue="general">
+          <TabsList>
+          <TabsTrigger value="general">General</TabsTrigger>
             <TabsTrigger value="sip">SIP</TabsTrigger>
             <TabsTrigger value="house">House</TabsTrigger>
             <TabsTrigger value="retirement">Retirement</TabsTrigger>
             <TabsTrigger value="swp">SWP</TabsTrigger>
           </TabsList>
-
-          {/* Helper for input fields */}
-          const renderInput = (id, label, value, setter, unit, isWords = false) => (
-            <div className="space-y-1.5">
-              <Label htmlFor={id} className="text-sm font-medium">{label}</Label>
-              <Input
-                id={id}
-                type="number"
-                value={value}
-                onChange={(e) => setter(Number(e.target.value))}
-                className="w-full"
-              />
-              {isWords ? (
-                <p className="text-xs text-muted-foreground h-4">₹ {numberToWords(value)}</p>
-              ) : (
-                <p className="text-xs text-muted-foreground h-4">{value} {unit}</p>
-              )}
-            </div>
-          );
-
-          const renderSlider = (id, label, value, setter, min, max, step, unit) => (
-            <div className="space-y-1.5">
-              <Label htmlFor={id} className="text-sm font-medium">{label}</Label>
-              <div className="flex items-center space-x-2">
-                <Slider
-                  id={id}
-                  min={min}
-                  max={max}
-                  step={step}
-                  value={[value]}
-                  onValueChange={(val) => setter(val[0])}
-                  className="w-full"
-                />
-                <span className="text-sm font-semibold w-16 text-right">{value}{unit}</span>
-              </div>
-               <p className="text-xs text-muted-foreground h-4"></p> {/* Placeholder for consistent height */}
-            </div>
-          );
-
           <TabsContent value="general">
-            <div className="grid md:grid-cols-2 gap-6">
-              {renderInput("monthlyIncome", "Monthly Income (₹)", monthlyIncome, setMonthlyIncome, "₹", true)}
-              {renderInput("monthlyExpenses", "Monthly Expenses (₹)", monthlyExpenses, setMonthlyExpenses, "₹", true)}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="sip">
-            <div className="grid md:grid-cols-2 gap-6">
-              {renderInput("monthlySIP", "Monthly SIP Amount (₹)", monthlySIP, setMonthlySIP, "₹", true)}
-              {renderInput("sipReturnRate", "Expected Annual Return Rate (%)", sipReturnRate, setSipReturnRate, "%")}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="house">
-            <div className="grid md:grid-cols-2 gap-6">
-              {renderInput("houseValue", "House Value (₹)", houseValue, setHouseValue, "₹", true)}
-              {renderSlider("downPaymentPercent", "Down Payment (%)", downPaymentPercent, setDownPaymentPercent, 10, 50, 1, "%")}
-              {renderInput("loanInterestRate", "Loan Interest Rate (%)", loanInterestRate, setLoanInterestRate, "%")}
-              {renderInput("loanTenureYears", "Loan Tenure (Years)", loanTenureYears, setLoanTenureYears, "years")}
-              {renderInput("yearsToBuyHouse", "Years until House Purchase", yearsToBuyHouse, setYearsToBuyHouse, "years")}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="retirement">
-            <div className="grid md:grid-cols-2 gap-6 mb-8">
-              {renderInput("currentAge", "Current Age", currentAge, setCurrentAge, "years")}
-              {renderInput("retirementAge", "Retirement Age", retirementAge, setRetirementAge, "years")}
-              {renderInput("monthlySwpAfterRetirement", "Desired Monthly Expense after Retirement (₹)", monthlySwpAfterRetirement, setMonthlySwpAfterRetirement, "₹", true)}
-              {renderInput("desiredRetirementCorpus", "Desired Retirement Corpus (₹)", desiredRetirementCorpus, setDesiredRetirementCorpus, "₹", true)}
-              {renderInput("inflationRate", "Expected Inflation Rate (%)", inflationRate, setInflationRate, "%")}
-            </div>
-
-            <Card className="bg-muted/30">
-              <CardHeader>
-                <CardTitle className="text-xl flex items-center"><Info size={20} className="mr-2 text-blue-500" />Retirement Readiness</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div>
-                  <div className="flex justify-between items-end mb-1">
-                    <Label className="text-sm font-medium">Projected Retirement Corpus</Label>
-                    <span className="text-xs text-muted-foreground">Target: {formatRupees(desiredRetirementCorpus)}</span>
-                  </div>
-                  <Progress value={retirementStats.corpusAchievementPercentage} className="w-full h-3" />
-                  <div className="flex justify-between text-sm mt-1">
-                    <span className="font-semibold">{formatRupees(retirementStats.projectedCorpus)}</span>
-                    <span className={`font-semibold ${retirementStats.corpusAchievementPercentage >= 100 ? 'text-green-600' : 'text-orange-600'}`}>
-                      {retirementStats.corpusAchievementPercentage.toFixed(1)}% Reached
-                    </span>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <StatCard
-                    title="Years of Sustainability"
-                    value={`${retirementStats.yearsOfSustainability} years`}
-                    icon={<CalendarDays className="h-4 w-4 text-muted-foreground" />}
-                    description="How long your corpus might last."
-                  />
-                  <StatCard
-                    title="Monthly Shortfall"
-                    value={formatRupees(retirementStats.monthlyShortfall)}
-                    icon={retirementStats.monthlyShortfall > 0 ? <AlertTriangle className="h-4 w-4 text-red-500" /> : <Landmark className="h-4 w-4 text-green-500" />}
-                    description={retirementStats.monthlyShortfall > 0 ? "Potential gap in monthly income." : "Your income covers expenses."}
-                  />
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="swp">
-            <div className="grid md:grid-cols-2 gap-6">
-              {renderInput("swpStartAge", "SWP Start Age", swpStartAge, setSwpStartAge, "years")}
-              {renderInput("swpAmount", "Initial Monthly SWP Amount (₹)", swpAmount, setSwpAmount, "₹", true)}
-              {renderInput("swpGrowthRate", "SWP Annual Growth Rate (%)", swpGrowthRate, setSwpGrowthRate, "%")}
+            <div className="grid grid-cols-1 gap-6 mb-4"> {/* Changed to 1 column for RotaryDials */}
+              <div className="flex flex-col items-center">
+                <Label htmlFor="monthlyIncome" className="mb-2">Monthly Income (₹)</Label>
+                <RotaryDial
+                  value={monthlyIncome}
+                  onChange={setMonthlyIncome}
+                  min={0}
+                  max={500000}
+                  step={1000}
+                />
+                <span className="mt-1 text-xs text-muted-foreground">₹ {numberToWords(monthlyIncome)}</span>
               </div>
+              <div className="flex flex-col items-center">
+                <Label htmlFor="monthlyExpenses" className="mb-2">Monthly Expenses (₹)</Label>
+                <RotaryDial
+                  value={monthlyExpenses}
+                  onChange={setMonthlyExpenses}
+                  min={0}
+                  max={300000}
+                  step={1000}
+                />
+                <span className="mt-1 text-xs text-muted-foreground">₹ {numberToWords(monthlyExpenses)}</span>
+              </div>
+            </div>
+          </TabsContent>
+          <TabsContent value="sip">
+            <div className="grid grid-cols-1 gap-6 mb-4"> {/* Changed to 1 column */}
+              <div className="flex flex-col items-center">
+                <Label htmlFor="monthlySIP" className="mb-2">Monthly SIP Amount (₹)</Label>
+                <RotaryDial
+                  value={monthlySIP}
+                  onChange={setMonthlySIP}
+                  min={0}
+                  max={100000}
+                  step={500}
+                />
+                <span className="mt-1 text-xs text-muted-foreground">₹ {numberToWords(monthlySIP)}</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <Label htmlFor="sipReturnRate" className="mb-2">Expected Annual Return Rate (%)</Label>
+                <RotaryDial
+                  value={sipReturnRate}
+                  onChange={setSipReturnRate}
+                  min={0}
+                  max={30}
+                  step={0.5}
+                />
+                <span className="mt-1 text-xs text-muted-foreground">{sipReturnRate}%</span>
+              </div>
+            </div>
+          </TabsContent>
+          <TabsContent value="house">
+            <div className="grid grid-cols-1 gap-6 mb-4"> {/* Changed to 1 column */}
+              <div className="flex flex-col items-center">
+                <Label htmlFor="houseValue" className="mb-2">House Value (₹)</Label>
+                <RotaryDial
+                  value={houseValue}
+                  onChange={setHouseValue}
+                  min={1000000}
+                  max={50000000}
+                  step={100000}
+                />
+                <span className="mt-1 text-xs text-muted-foreground">₹ {numberToWords(houseValue)}</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <Label htmlFor="downPaymentPercent" className="mb-2">Down Payment (%)</Label>
+                <RotaryDial
+                  value={downPaymentPercent}
+                  onChange={setDownPaymentPercent}
+                  min={10}
+                  max={50}
+                  step={1}
+                />
+                <span className="mt-1 text-xs text-muted-foreground">{downPaymentPercent}%</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <Label htmlFor="loanInterestRate" className="mb-2">Loan Interest Rate (%)</Label>
+                <RotaryDial
+                  value={loanInterestRate}
+                  onChange={setLoanInterestRate}
+                  min={1}
+                  max={20}
+                  step={0.1}
+                />
+                <span className="mt-1 text-xs text-muted-foreground">{loanInterestRate}%</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <Label htmlFor="loanTenureYears" className="mb-2">Loan Tenure (Years)</Label>
+                <RotaryDial
+                  value={loanTenureYears}
+                  onChange={setLoanTenureYears}
+                  min={1}
+                  max={30}
+                  step={1}
+                />
+                <span className="mt-1 text-xs text-muted-foreground">{loanTenureYears} years</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <Label htmlFor="yearsToBuyHouse" className="mb-2">Years until House Purchase</Label>
+                <RotaryDial
+                  value={yearsToBuyHouse}
+                  onChange={setYearsToBuyHouse}
+                  min={0}
+                  max={20}
+                  step={1}
+                />
+                <span className="mt-1 text-xs text-muted-foreground">{yearsToBuyHouse} years</span>
+              </div>
+            </div>
+          </TabsContent>
+          <TabsContent value="retirement">
+            <div className="grid grid-cols-1 gap-6 mb-4"> {/* Changed to 1 column */}
+              <div className="flex flex-col items-center">
+                <Label htmlFor="currentAge" className="mb-2">Current Age</Label>
+                <RotaryDial
+                  value={currentAge}
+                  onChange={setCurrentAge}
+                  min={18}
+                  max={80}
+                  step={1}
+                />
+                 <span className="mt-1 text-xs text-muted-foreground">{currentAge} years</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <Label htmlFor="retirementAge" className="mb-2">Retirement Age</Label>
+                <RotaryDial
+                  value={retirementAge}
+                  onChange={setRetirementAge}
+                  min={40}
+                  max={80}
+                  step={1}
+                />
+                <span className="mt-1 text-xs text-muted-foreground">{retirementAge} years</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <Label htmlFor="monthlySwpAfterRetirement" className="mb-2">Desired Monthly Expense after Retirement (₹)</Label>
+                <RotaryDial
+                  value={monthlySwpAfterRetirement}
+                  onChange={setMonthlySwpAfterRetirement}
+                  min={10000}
+                  max={500000}
+                  step={1000}
+                />
+                <span className="mt-1 text-xs text-muted-foreground">₹ {numberToWords(monthlySwpAfterRetirement)}</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <Label htmlFor="desiredRetirementCorpus" className="mb-2">Desired Retirement Corpus (₹)</Label>
+                <RotaryDial
+                  value={desiredRetirementCorpus}
+                  onChange={setDesiredRetirementCorpus}
+                  min={1000000}
+                  max={100000000}
+                  step={100000}
+                />
+                <span className="mt-1 text-xs text-muted-foreground">₹ {numberToWords(desiredRetirementCorpus)}</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <Label htmlFor="inflationRate" className="mb-2">Expected Inflation Rate (%)</Label>
+                <RotaryDial
+                  value={inflationRate}
+                  onChange={setInflationRate}
+                  min={0}
+                  max={15}
+                  step={0.1}
+                />
+                <span className="mt-1 text-xs text-muted-foreground">{inflationRate}%</span>
+              </div>
+            </div>
+            <div className="mt-6">
+              <h3 className="text-lg font-semibold mb-2">Retirement Readiness</h3>
+              <div className="mb-4">
+                <Label>Projected Retirement Corpus</Label>
+                <Progress value={retirementStats.corpusAchievementPercentage} className="w-full" />
+                <div className="flex justify-between text-sm mt-1">
+                  <span>{formatRupees(retirementStats.projectedCorpus)}</span>
+                  <span>{formatRupees(desiredRetirementCorpus)}</span>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Years of Sustainability</Label>
+                  <p className="text-2xl font-bold">{retirementStats.yearsOfSustainability} years</p>
+                </div>
+                <div>
+                  <Label>Monthly Shortfall</Label>
+                  <p className="text-2xl font-bold">{formatRupees(retirementStats.monthlyShortfall)}</p>
+                </div>
+              </div>
+            </div>
+          </TabsContent>
+          <TabsContent value="swp">
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              </div>
+            </div>
+            <div className="mt-6">
+              <h3 className="text-lg font-semibold mb-2 text-center">Retirement Readiness</h3>
+              <div className="mb-4 px-2">
+                <Label className="text-xs">Projected vs. Desired Corpus</Label>
+                <Progress value={retirementStats.corpusAchievementPercentage} className="w-full h-2 mt-1" />
+                <div className="flex justify-between text-xs mt-1">
+                  <span>{formatRupees(retirementStats.projectedCorpus)}</span>
+                  <span>{formatRupees(desiredRetirementCorpus)}</span>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2 text-center text-sm">
+                <div>
+                  <Label className="text-xs">Years of Sustainability</Label>
+                  <p className="font-bold">{retirementStats.yearsOfSustainability} yrs</p>
+                </div>
+                <div>
+                  <Label className="text-xs">Monthly Shortfall</Label>
+                  <p className="font-bold">{formatRupees(retirementStats.monthlyShortfall)}</p>
+                </div>
+              </div>
+            </div>
+          </TabsContent>
+          <TabsContent value="swp">
+            <div className="grid grid-cols-1 gap-6 mb-4"> {/* Changed to 1 column */}
+              <div className="flex flex-col items-center">
+                <Label htmlFor="swpStartAge" className="mb-2">SWP Start Age</Label>
+                <RotaryDial
+                  value={swpStartAge}
+                  onChange={setSwpStartAge}
+                  min={50}
+                  max={80}
+                  step={1}
+                />
+                <span className="mt-1 text-xs text-muted-foreground">{swpStartAge} years</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <Label htmlFor="swpAmount" className="mb-2">Initial Monthly SWP Amount (₹)</Label>
+                <RotaryDial
+                  value={swpAmount}
+                  onChange={setSwpAmount}
+                  min={10000}
+                  max={200000}
+                  step={1000}
+                />
+                <span className="mt-1 text-xs text-muted-foreground">₹ {numberToWords(swpAmount)}</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <Label htmlFor="swpGrowthRate" className="mb-2">SWP Annual Growth Rate (%)</Label>
+                <RotaryDial
+                  value={swpGrowthRate}
+                  onChange={setSwpGrowthRate}
+                  min={0}
+                  max={10}
+                  step={0.5}
+                />
+                <span className="mt-1 text-xs text-muted-foreground">{swpGrowthRate}%</span>
+              </div>
+            </div>
           </TabsContent>
         </Tabs>
-
-        <div className="mt-8 pt-6 border-t">
-          <h3 className="text-xl font-semibold mb-4 flex items-center"><TrendingUp size={20} className="mr-2 text-indigo-500"/>Financial Projection Over Time</h3>
-          <ResponsiveContainer width="100%" height={400}>
-            <LineChart data={data} margin={{ top: 5, right: 20, left: 20, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.3} />
-              <XAxis dataKey="age" label={{ value: 'Age', position: 'insideBottom', offset: -10, fontSize: 12 }} tick={{ fontSize: 11 }} />
-              <YAxis
-                tickFormatter={(value) => `₹${value / 100000}L`}
-                label={{ value: 'Amount (Lakhs)', angle: -90, position: 'insideLeft', offset: -10, fontSize: 12 }}
-                tick={{ fontSize: 11 }}
-                tickCount={8}
-              />
-              <Tooltip
-                formatter={(value, name) => [formatRupees(value), name]}
-                labelStyle={{ fontSize: 13, fontWeight: 'bold' }}
-                itemStyle={{ fontSize: 12 }}
-                contentStyle={{ backgroundColor: 'rgba(255, 255, 255, 0.9)', borderRadius: '8px', boxShadow: '0 2px 10px rgba(0,0,0,0.1)' }}
-              />
-              <Legend wrapperStyle={{ fontSize: "12px", paddingTop: '10px' }} />
-              <Line type="monotone" dataKey="savings" stroke="#3b82f6" name="Savings" dot={false} strokeWidth={2} />
-              <Line type="monotone" dataKey="investments" stroke="#10b981" name="Investments" dot={false} strokeWidth={2} />
-              <Line type="monotone" dataKey="totalWealth" stroke="#f59e0b" name="Total Wealth" dot={false} strokeWidth={2.5} />
-              <Line type="monotone" dataKey="loanRemaining" stroke="#ef4444" name="Loan Remaining" dot={false} strokeWidth={2} />
-              <Line type="monotone" dataKey="swpAmount" stroke="#8b5cf6" name="SWP Amount" dot={false} strokeWidth={2} />
-              <ReferenceLine x={retirementAge} stroke="#e11d48" strokeDasharray="4 4" label={{ value: "Retirement", fontSize: 10, position: 'insideTopRight', fill: '#e11d48' }} />
-              <ReferenceLine x={swpStartAge} stroke="#059669" strokeDasharray="4 4" label={{ value: "SWP Start", fontSize: 10, position: 'insideTopRight', fill: '#059669' }} />
-            </LineChart>
-          </ResponsiveContainer>
+        <div className="mt-6 pt-4 border-t">
+          <MobileLineChart
+            data={data}
+            retirementAge={retirementAge}
+            swpStartAge={swpStartAge}
+            formatRupees={formatRupees}
+          />
         </div>
       </CardContent>
     </Card>
   );
 };
 
-export default FinancialPlanner;
-              </div>
-            </div>
-          </TabsContent>
-        </Tabs>
-        <ResponsiveContainer width="100%" height={400}>
-          <LineChart data={data}>
+export default MobileFinancialPlanner;
 
 
 
@@ -353,7 +451,7 @@ export default FinancialPlanner;
 // import { BarChart } from '@mui/x-charts';
 // import { numberToWords } from '@/utils/numberToWords';
 
-// const FinancialPlanner = () => {
+// const MobileFinancialPlanner = () => {
 //     const [currentSalary, setCurrentSalary] = useState(50000);
 //     const [percentageIncrease, setPercentageIncrease] = useState(5);
 //     const [sipPercentage, setSipPercentage] = useState(20);
@@ -361,7 +459,7 @@ export default FinancialPlanner;
 //     const [loanInterestRate, setLoanInterestRate] = useState(8);
 //     const [loanTenure, setLoanTenure] = useState(20);
 //     const [planningYears, setPlanningYears] = useState(30);
-    
+
 //     const [monthlySalaryData, setMonthlySalaryData] = useState([]);
 //     const [monthlySipData, setMonthlySipData] = useState([]);
 //     const [monthlyEmiData, setMonthlyEmiData] = useState([]);
@@ -511,7 +609,7 @@ export default FinancialPlanner;
 //     );
 // };
 
-// export default FinancialPlanner;
+// export default MobileFinancialPlanner;
 
 
 
@@ -529,7 +627,7 @@ export default FinancialPlanner;
 // import { LineChart } from '@mui/x-charts';
 // import { numberToWords } from '@/utils/numberToWords';
 
-// const FinancialPlanner = () => {
+// const MobileFinancialPlanner = () => {
 //     const [currentSalary, setCurrentSalary] = useState(50000);
 //     const [percentageIncrease, setPercentageIncrease] = useState(5);
 //     const [sipStartYear, setSipStartYear] = useState(1);
@@ -542,7 +640,7 @@ export default FinancialPlanner;
 //     const [loanInterestRate, setLoanInterestRate] = useState(8);
 //     const [loanTenure, setLoanTenure] = useState(20);
 //     const [sipPercentage, setSipPercentage] = useState(20);
-    
+
 //     const [xAxis, setXAxis] = useState([]);
 //     const [salaryData, setSalaryData] = useState([]);
 //     const [sipData, setSipData] = useState([]);
@@ -750,4 +848,4 @@ export default FinancialPlanner;
 //     );
 // };
 
-// export default FinancialPlanner;
+// export default MobileFinancialPlanner;

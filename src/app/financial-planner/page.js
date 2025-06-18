@@ -1,8 +1,33 @@
+"use client" // Required for using hooks like useState and useEffect
+
+import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/Components/ui/tabs";
 import FinancialPlanner from "@/Components/FinancialPlanner";
+import MobileFinancialPlanner from "@/Components/MobileFinancialPlanner"; // Import MobileFinancialPlanner
 import SIPCalculator from "@/Components/SIPCalculator";
 
+// Custom hook for media query
+const useMediaQuery = (query) => {
+  const [matches, setMatches] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia(query);
+    if (media.matches !== matches) {
+      setMatches(media.matches);
+    }
+    const listener = () => {
+      setMatches(media.matches);
+    };
+    media.addEventListener('change', listener);
+    return () => media.removeEventListener('change', listener);
+  }, [matches, query]);
+
+  return matches;
+};
+
 export default function Page() {
+  const isMobile = useMediaQuery('(max-width: 768px)');
+
   return (
     <div>
       <Tabs defaultValue="sip-calculator">
@@ -18,10 +43,9 @@ export default function Page() {
             <SIPCalculator />
           </TabsContent>
           <TabsContent value="financial-planner">
-            <FinancialPlanner />
+            {isMobile ? <MobileFinancialPlanner /> : <FinancialPlanner />}
           </TabsContent>
       </Tabs>
     </div>
   );
 }
-   
