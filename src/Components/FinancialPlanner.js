@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react'; // Import useCallback
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card'; // This path is correct as card.jsx is in ./ui/
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/Components/ui/tabs'; // Corrected path to uppercase C
@@ -99,7 +99,33 @@ const FinancialPlanner = () => {
 
 //   console.log("rendignig")
 
-const calculateProjection = () => {
+const calculateRetirementStats = useCallback((projection, retirementAge, monthlySwpAfterRetirement, inflationRate, currentAge, sipReturnRate, desiredRetirementCorpus, setRetirementStats) => {
+  const projectedCorpus = projection.find(p => p.age === retirementAge)?.investments || 0;
+  const inflationAdjustedMonthlyExpense = monthlySwpAfterRetirement *
+    Math.pow(1 + inflationRate / 100, retirementAge - currentAge);
+
+  let yearsOfSustainability = 0;
+  let remainingCorpus = projectedCorpus;
+
+  for (let i = retirementAge - currentAge; i < projection.length; i++) {
+    if (remainingCorpus <= 0) break;
+    remainingCorpus = projection[i].investments;
+    yearsOfSustainability++;
+  }
+
+  const monthlyShortfall = Math.max(0, inflationAdjustedMonthlyExpense - (projectedCorpus * (sipReturnRate / 100) / 12));
+  const corpusAchievementPercentage = Math.min(100, (projectedCorpus / desiredRetirementCorpus) * 100);
+
+  setRetirementStats({
+    projectedCorpus,
+    yearsOfSustainability,
+    monthlyShortfall,
+    corpusAchievementPercentage
+  });
+}, []); // Assuming setRetirementStats is stable, other dependencies need to be listed if they change
+
+
+const calculateProjection = useCallback(() => {
     let projection = [];
     let savings = 0;
     let investments = 0;
@@ -163,39 +189,24 @@ const calculateProjection = () => {
     }
 
     setData(projection);
-    calculateRetirementStats(projection);
-  };
-
-  const calculateRetirementStats = (projection) => {
-    const projectedCorpus = projection.find(p => p.age === retirementAge)?.investments || 0;
-    const inflationAdjustedMonthlyExpense = monthlySwpAfterRetirement * 
-      Math.pow(1 + inflationRate / 100, retirementAge - currentAge);
-
-    let yearsOfSustainability = 0;
-    let remainingCorpus = projectedCorpus;
-
-    for (let i = retirementAge - currentAge; i < projection.length; i++) {
-      if (remainingCorpus <= 0) break;
-      remainingCorpus = projection[i].investments;
-      yearsOfSustainability++;
-    }
-
-    const monthlyShortfall = Math.max(0, inflationAdjustedMonthlyExpense - (projectedCorpus * (sipReturnRate / 100) / 12));
-    const corpusAchievementPercentage = Math.min(100, (projectedCorpus / desiredRetirementCorpus) * 100);
-
-    setRetirementStats({
-      projectedCorpus,
-      yearsOfSustainability,
-      monthlyShortfall,
-      corpusAchievementPercentage
-    });
-  };
+    // Pass necessary state values and setters to calculateRetirementStats
+    calculateRetirementStats(
+      projection, retirementAge, monthlySwpAfterRetirement, inflationRate,
+      currentAge, sipReturnRate, desiredRetirementCorpus, setRetirementStats
+    );
+  }, [
+    currentAge, houseValue, downPaymentPercent, loanTenureYears, loanInterestRate,
+    retirementAge, swpStartAge, monthlyIncome, monthlyExpenses, monthlySIP,
+    yearsToBuyHouse, sipReturnRate, swpAmount, swpGrowthRate,
+    setData, calculateRetirementStats, // calculateRetirementStats is now a dependency
+    // Dependencies for calculateRetirementStats that are passed to it:
+    monthlySwpAfterRetirement, inflationRate, desiredRetirementCorpus, setRetirementStats
+    // Note: setRetirementStats is stable, but other direct state values used by calculateRetirementStats also make calculateProjection dependent on them.
+]);
 
   useEffect(() => {
     calculateProjection();
-  }, [monthlyIncome, monthlyExpenses, monthlySIP, sipReturnRate, houseValue, downPaymentPercent, 
-      loanInterestRate, loanTenureYears, yearsToBuyHouse, retirementAge, currentAge, 
-      monthlySwpAfterRetirement, desiredRetirementCorpus, inflationRate, swpStartAge, swpAmount, swpGrowthRate, calculateProjection]); // Added calculateProjection
+  }, [calculateProjection]); // useEffect now depends on the memoized calculateProjection
 
   const formatRupees = (value) => {
     return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(value);

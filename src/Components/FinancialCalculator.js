@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react'; // Import useCallback
 import { numberToWords } from '@/utils/numberToWords';
 import { Button, Card, CardContent, CardHeader, Input, Tabs, Tab, Box, Typography } from '@mui/material';
 import { LineChart } from '@mui/x-charts/LineChart';
@@ -32,8 +32,8 @@ const SIPCalculator = () => {
         return Math.pow(1 + annualRate / 100, 1 / 12) - 1;
     };
 
-    const calculateFinances = () => {
-        const monthlyInvestmentRate = calculateMonthlyRate(expectedReturnRate);
+    const calculateFinances = useCallback(() => { // Wrap with useCallback
+        const monthlyInvestmentRate = calculateMonthlyRate(expectedReturnRate); // calculateMonthlyRate is stable or defined outside
         const monthlyLoanRate = loanInterestRate / 100 / 12;
         const numberOfLoanPayments = loanTerm * 12;
         const monthlyMortgagePayment = loanAmount > 0 ?
@@ -98,13 +98,17 @@ const SIPCalculator = () => {
 
         setChartData(data);
         setTotalInterestPaid(Math.round(totalInterest));
-    };
+    }, [ // Add dependencies of calculateFinances
+        expectedReturnRate, loanInterestRate, loanTerm, loanAmount,
+        investmentDuration, swpStartYear, withdrawalDuration, loanStartYear,
+        initialLumpsum, monthlyInvestment, withdrawalAmount, downPayment
+        // setMonthlyMortgage, setChartData, setTotalInterestPaid are state setters, stable by default
+        // calculateMonthlyRate is stable if defined outside or memoized itself
+    ]);
 
     useEffect(() => {
         calculateFinances();
-    }, [initialLumpsum, monthlyInvestment, expectedReturnRate, investmentDuration,
-        withdrawalAmount, withdrawalDuration, swpStartYear, loanAmount, loanTerm,
-        loanInterestRate, downPayment, loanStartYear, calculateFinances]); // Added calculateFinances
+    }, [calculateFinances]); // Now useEffect depends only on the memoized calculateFinances
 
     const handleTabChange = (event, newValue) => {
         setActiveTab(newValue);
