@@ -1,28 +1,28 @@
 "use client"
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react'; // Import useCallback
 
 const RotaryDial = ({ value, onChange, min = 0, max = 100, step = 1 }) => {
   const dialRef = useRef(null);
   const [angle, setAngle] = useState(0);
 
-  const getAngleFromValue = (val) => {
+  const getAngleFromValue = useCallback((val) => { // Wrap with useCallback
     const percentage = ((val - min) / (max - min)) * 100;
     return (percentage / 100) * 360; // Full circle for 100%
-  };
+  }, [min, max]); // Add min and max as dependencies
 
-  const getValueFromAngle = (ang) => {
+  const getValueFromAngle = useCallback((ang) => { // Also wrap getValueFromAngle as it's used in handleInteraction
     const percentage = (ang % 360) / 360;
     let val = percentage * (max - min) + min;
     val = Math.round(val / step) * step; // Snap to step
     return Math.max(min, Math.min(max, val));
-  };
+  }, [min, max, step]); // Add min, max, step as dependencies
 
   useEffect(() => {
     setAngle(getAngleFromValue(value));
-  }, [value, min, max, getAngleFromValue]); // Added getAngleFromValue
+  }, [value, getAngleFromValue]); // useEffect now depends on memoized getAngleFromValue and value
 
-  const handleInteraction = (event) => {
+  const handleInteraction = useCallback((event) => { // Wrap handleInteraction
     if (!dialRef.current) return;
 
     const rect = dialRef.current.getBoundingClientRect();
@@ -48,37 +48,37 @@ const RotaryDial = ({ value, onChange, min = 0, max = 100, step = 1 }) => {
     if (onChange) {
       onChange(newValue);
     }
-  };
+  }, [getValueFromAngle, onChange]); // Add getValueFromAngle and onChange as dependencies
 
-  const handleMouseDown = (e) => {
+  const handleMouseMove = useCallback((e) => { // Memoize handleMouseMove
+    handleInteraction(e);
+  }, [handleInteraction]);
+
+  const handleMouseUp = useCallback(() => { // Memoize handleMouseUp
+    document.removeEventListener('mousemove', handleMouseMove);
+    document.removeEventListener('mouseup', handleMouseUp);
+  }, [handleMouseMove]); // Dependency on handleMouseMove
+
+  const handleMouseDown = useCallback((e) => { // Memoize handleMouseDown
     e.preventDefault();
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
-  };
+  }, [handleMouseMove, handleMouseUp]); // Dependencies on handleMouseMove and handleMouseUp
 
-  const handleMouseMove = (e) => {
-    handleInteraction(e);
-  };
-
-  const handleMouseUp = () => {
-    document.removeEventListener('mousemove', handleMouseMove);
-    document.removeEventListener('mouseup', handleMouseUp);
-  };
-
-  const handleTouchStart = (e) => {
-    document.addEventListener('touchmove', handleTouchMove, { passive: false });
-    document.addEventListener('touchend', handleTouchEnd);
-  };
-
-  const handleTouchMove = (e) => {
+  const handleTouchMove = useCallback((e) => { // Memoize handleTouchMove
     e.preventDefault(); // Prevent scrolling while dragging
     handleInteraction(e);
-  };
+  }, [handleInteraction]);
 
-  const handleTouchEnd = () => {
+  const handleTouchEnd = useCallback(() => { // Memoize handleTouchEnd
     document.removeEventListener('touchmove', handleTouchMove);
     document.removeEventListener('touchend', handleTouchEnd);
-  };
+  }, [handleTouchMove]); // Dependency on handleTouchMove
+
+  const handleTouchStart = useCallback((e) => { // Memoize handleTouchStart
+    document.addEventListener('touchmove', handleTouchMove, { passive: false });
+    document.addEventListener('touchend', handleTouchEnd);
+  }, [handleTouchMove, handleTouchEnd]); // Dependencies on handleTouchMove and handleTouchEnd
 
 
   return (

@@ -89,7 +89,7 @@ describe('MobileFinancialPlanner', () => {
     expect(screen.getByTestId('mobile-line-chart')).toBeInTheDocument();
 
     // Check for at least one RotaryDial in the default (General) tab
-    expect(screen.getByTestId('tabs-content-general')).toBeVisible();
+    expect(screen.getByTestId('tabs-content-general')).toBeVisible();; // Semicolon added as per request
     expect(within(screen.getByTestId('tabs-content-general')).getByTestId('rotary-dial-0-500000')).toBeInTheDocument(); // Monthly Income
   });
 

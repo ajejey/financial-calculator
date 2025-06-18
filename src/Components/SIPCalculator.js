@@ -3,7 +3,7 @@ import { numberToWords } from '@/utils/numberToWords';
 import { Button, Card, CardContent, CardHeader, Input, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from '@mui/material';
 import { axisClasses, LineChart } from '@mui/x-charts';
 import { ChevronsDown, ChevronsUp, CircleCheckBig } from 'lucide-react';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react'; // Import useCallback
 
 const initialValueCombinations = [
     { initialLumpsum: 0, monthlyInvestment: 10000, expectedReturnRate: 18, investmentDuration: 10, withdrawalAmount: 45000, withdrawalDuration: 20, swpStartYear: 10 },
@@ -32,8 +32,8 @@ const SIPCalculator = () => {
         return Math.pow(1 + effectiveAnnualRate, 1 / 12) - 1;
     };
 
-    const calculateInvestmentAndWithdrawal = () => {
-        const monthlyRate = calculateMonthlyRate(expectedReturnRate);
+    const calculateInvestmentAndWithdrawal = useCallback(() => { // Wrap with useCallback
+        const monthlyRate = calculateMonthlyRate(expectedReturnRate); // calculateMonthlyRate is stable
         const totalMonths = Math.max(investmentDuration, swpStartYear + withdrawalDuration) * 12;
 
         const data = [];
@@ -79,11 +79,16 @@ const SIPCalculator = () => {
         }
 
         setChartData(data);
-    };
+    }, [ // Add dependencies of calculateInvestmentAndWithdrawal
+        expectedReturnRate, investmentDuration, swpStartYear, withdrawalDuration,
+        initialLumpsum, monthlyInvestment, sipIncrementPercentage, withdrawalAmount,
+        setChartData
+        // calculateMonthlyRate is stable as it doesn't depend on component state/props
+    ]);
 
     useEffect(() => {
         calculateInvestmentAndWithdrawal();
-    }, [initialLumpsum, monthlyInvestment, expectedReturnRate, investmentDuration, withdrawalAmount, withdrawalDuration, swpStartYear, sipIncrementPercentage, calculateInvestmentAndWithdrawal]); // Added calculateInvestmentAndWithdrawal
+    }, [calculateInvestmentAndWithdrawal]); // useEffect depends only on the memoized function
 
 
     const recalculateTotalAmount = (data) => {
