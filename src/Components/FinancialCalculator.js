@@ -104,7 +104,7 @@ const SIPCalculator = () => {
         calculateFinances();
     }, [initialLumpsum, monthlyInvestment, expectedReturnRate, investmentDuration,
         withdrawalAmount, withdrawalDuration, swpStartYear, loanAmount, loanTerm,
-        loanInterestRate, downPayment, loanStartYear]);
+        loanInterestRate, downPayment, loanStartYear, calculateFinances]); // Added calculateFinances
 
     const handleTabChange = (event, newValue) => {
         setActiveTab(newValue);

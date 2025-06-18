@@ -83,7 +83,7 @@ const SIPCalculator = () => {
 
     useEffect(() => {
         calculateInvestmentAndWithdrawal();
-    }, [initialLumpsum, monthlyInvestment, expectedReturnRate, investmentDuration, withdrawalAmount, withdrawalDuration, swpStartYear, sipIncrementPercentage]);
+    }, [initialLumpsum, monthlyInvestment, expectedReturnRate, investmentDuration, withdrawalAmount, withdrawalDuration, swpStartYear, sipIncrementPercentage, calculateInvestmentAndWithdrawal]); // Added calculateInvestmentAndWithdrawal
 
 
     const recalculateTotalAmount = (data) => {

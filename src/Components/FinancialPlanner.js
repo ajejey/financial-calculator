@@ -1,12 +1,12 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from 'recharts';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import { Label } from './ui/label';
-import { Input } from './ui/input';
-import { Slider } from './ui/slider';
-import { Progress } from './ui/progress';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card'; // This path is correct as card.jsx is in ./ui/
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/Components/ui/tabs'; // Corrected path to uppercase C
+import { Label } from '@/Components/ui/label';   // Corrected path to uppercase C
+import { Input } from '@/Components/ui/input';   // Corrected path to uppercase C
+import { Slider } from '@/Components/ui/slider'; // Corrected path to uppercase C
+import { Progress } from '@/Components/ui/progress'; // Corrected path to uppercase C
 import { DollarSign, CalendarDays, Landmark, TrendingUp, AlertTriangle, Info } from 'lucide-react'; // Added icons
 import { numberToWords } from '@/utils/numberToWords';
 
@@ -21,6 +21,45 @@ const StatCard = ({ title, value, icon, description }) => (
       {description && <p className="text-xs text-muted-foreground">{description}</p>}
     </CardContent>
   </Card>
+);
+
+// Helper for input fields - defined globally in the module
+const renderInput = (id, label, value, setter, unit, isWords = false) => (
+  <div className="space-y-1.5">
+    <Label htmlFor={id} className="text-sm font-medium">{label}</Label>
+    <Input
+      id={id}
+      type="number"
+      value={value}
+      onChange={(e) => setter(Number(e.target.value))}
+      className="w-full"
+    />
+    {isWords ? (
+      <p className="text-xs text-muted-foreground h-4">₹ {numberToWords(value)}</p>
+    ) : (
+      <p className="text-xs text-muted-foreground h-4">{value} {unit}</p>
+    )}
+  </div>
+);
+
+// Helper for slider fields - defined globally in the module
+const renderSlider = (id, label, value, setter, min, max, step, unit) => (
+  <div className="space-y-1.5">
+    <Label htmlFor={id} className="text-sm font-medium">{label}</Label>
+    <div className="flex items-center space-x-2">
+      <Slider
+        id={id}
+        min={min}
+        max={max}
+        step={step}
+        value={[value]}
+        onValueChange={(val) => setter(val[0])}
+        className="w-full"
+      />
+      <span className="text-sm font-semibold w-16 text-right">{value}{unit}</span>
+    </div>
+     <p className="text-xs text-muted-foreground h-4"></p> {/* Placeholder for consistent height */}
+  </div>
 );
 
 const FinancialPlanner = () => {
@@ -156,7 +195,7 @@ const calculateProjection = () => {
     calculateProjection();
   }, [monthlyIncome, monthlyExpenses, monthlySIP, sipReturnRate, houseValue, downPaymentPercent, 
       loanInterestRate, loanTenureYears, yearsToBuyHouse, retirementAge, currentAge, 
-      monthlySwpAfterRetirement, desiredRetirementCorpus, inflationRate, swpStartAge, swpAmount, swpGrowthRate]);
+      monthlySwpAfterRetirement, desiredRetirementCorpus, inflationRate, swpStartAge, swpAmount, swpGrowthRate, calculateProjection]); // Added calculateProjection
 
   const formatRupees = (value) => {
     return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(value);
@@ -176,44 +215,6 @@ const calculateProjection = () => {
             <TabsTrigger value="retirement">Retirement</TabsTrigger>
             <TabsTrigger value="swp">SWP</TabsTrigger>
           </TabsList>
-
-          {/* Helper for input fields */}
-          const renderInput = (id, label, value, setter, unit, isWords = false) => (
-            <div className="space-y-1.5">
-              <Label htmlFor={id} className="text-sm font-medium">{label}</Label>
-              <Input
-                id={id}
-                type="number"
-                value={value}
-                onChange={(e) => setter(Number(e.target.value))}
-                className="w-full"
-              />
-              {isWords ? (
-                <p className="text-xs text-muted-foreground h-4">₹ {numberToWords(value)}</p>
-              ) : (
-                <p className="text-xs text-muted-foreground h-4">{value} {unit}</p>
-              )}
-            </div>
-          );
-
-          const renderSlider = (id, label, value, setter, min, max, step, unit) => (
-            <div className="space-y-1.5">
-              <Label htmlFor={id} className="text-sm font-medium">{label}</Label>
-              <div className="flex items-center space-x-2">
-                <Slider
-                  id={id}
-                  min={min}
-                  max={max}
-                  step={step}
-                  value={[value]}
-                  onValueChange={(val) => setter(val[0])}
-                  className="w-full"
-                />
-                <span className="text-sm font-semibold w-16 text-right">{value}{unit}</span>
-              </div>
-               <p className="text-xs text-muted-foreground h-4"></p> {/* Placeholder for consistent height */}
-            </div>
-          );
 
           <TabsContent value="general">
             <div className="grid md:grid-cols-2 gap-6">
@@ -329,12 +330,6 @@ const calculateProjection = () => {
 };
 
 export default FinancialPlanner;
-              </div>
-            </div>
-          </TabsContent>
-        </Tabs>
-        <ResponsiveContainer width="100%" height={400}>
-          <LineChart data={data}>
 
 
 

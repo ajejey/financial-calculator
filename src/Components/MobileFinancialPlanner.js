@@ -144,7 +144,7 @@ const calculateProjection = () => {
     calculateProjection();
   }, [monthlyIncome, monthlyExpenses, monthlySIP, sipReturnRate, houseValue, downPaymentPercent,
       loanInterestRate, loanTenureYears, yearsToBuyHouse, retirementAge, currentAge,
-      monthlySwpAfterRetirement, desiredRetirementCorpus, inflationRate, swpStartAge, swpAmount, swpGrowthRate]);
+      monthlySwpAfterRetirement, desiredRetirementCorpus, inflationRate, swpStartAge, swpAmount, swpGrowthRate, calculateProjection]); // Added calculateProjection
 
   const formatRupees = (value) => {
     return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(value);
@@ -333,10 +333,11 @@ const calculateProjection = () => {
                 <span className="mt-1 text-xs text-muted-foreground">{inflationRate}%</span>
               </div>
             </div>
+            {/* Retirement Readiness section correctly placed within Retirement Tab */}
             <div className="mt-6">
-              <h3 className="text-lg font-semibold mb-2">Retirement Readiness</h3>
-              <div className="mb-4">
-                <Label>Projected Retirement Corpus</Label>
+              <h3 className="text-lg font-semibold mb-2 text-center">Retirement Readiness</h3>
+              <div className="mb-4 px-2">
+                <Label className="text-xs">Projected vs. Desired Corpus</Label>
                 <Progress value={retirementStats.corpusAchievementPercentage} className="w-full" />
                 <div className="flex justify-between text-sm mt-1">
                   <span>{formatRupees(retirementStats.projectedCorpus)}</span>
@@ -355,34 +356,9 @@ const calculateProjection = () => {
               </div>
             </div>
           </TabsContent>
+          {/* Correct SWP Tab Content */}
           <TabsContent value="swp">
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              </div>
-            </div>
-            <div className="mt-6">
-              <h3 className="text-lg font-semibold mb-2 text-center">Retirement Readiness</h3>
-              <div className="mb-4 px-2">
-                <Label className="text-xs">Projected vs. Desired Corpus</Label>
-                <Progress value={retirementStats.corpusAchievementPercentage} className="w-full h-2 mt-1" />
-                <div className="flex justify-between text-xs mt-1">
-                  <span>{formatRupees(retirementStats.projectedCorpus)}</span>
-                  <span>{formatRupees(desiredRetirementCorpus)}</span>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-2 text-center text-sm">
-                <div>
-                  <Label className="text-xs">Years of Sustainability</Label>
-                  <p className="font-bold">{retirementStats.yearsOfSustainability} yrs</p>
-                </div>
-                <div>
-                  <Label className="text-xs">Monthly Shortfall</Label>
-                  <p className="font-bold">{formatRupees(retirementStats.monthlyShortfall)}</p>
-                </div>
-              </div>
-            </div>
-          </TabsContent>
-          <TabsContent value="swp">
-            <div className="grid grid-cols-1 gap-6 mb-4"> {/* Changed to 1 column */}
+            <div className="grid grid-cols-1 gap-6 mb-4">
               <div className="flex flex-col items-center">
                 <Label htmlFor="swpStartAge" className="mb-2">SWP Start Age</Label>
                 <RotaryDial

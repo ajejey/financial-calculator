@@ -20,7 +20,7 @@ const RotaryDial = ({ value, onChange, min = 0, max = 100, step = 1 }) => {
 
   useEffect(() => {
     setAngle(getAngleFromValue(value));
-  }, [value, min, max]);
+  }, [value, min, max, getAngleFromValue]); // Added getAngleFromValue
 
   const handleInteraction = (event) => {
     if (!dialRef.current) return;
